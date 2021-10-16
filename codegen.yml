@@ -1,0 +1,12 @@
+schema: ['./src/schema.graphql']
+generates:
+  ./src/resolvers/types/index.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
+    config:
+      mapperTypeSuffix: Model
+      mappers:
+        User: '@prisma/client/index.d#User'
+config:
+  contextType: './context#Context'

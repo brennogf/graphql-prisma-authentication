@@ -1,0 +1,54 @@
+name: Test
+
+on: ['push', 'pull_request']
+
+jobs:
+  code:
+    timeout-minutes: 10
+    name: Test Code
+    runs-on: ubuntu-latest
+
+    env:
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      APP_URL: ${{ secrets.APP_URL }}
+      PORT: ${{ secrets.PORT }}
+      TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 0
+
+      - name: Start Docker
+        run: docker-compose -f "docker-compose.yml" up -d --build
+
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Check tests
+        run: yarn test
+
+      - name: Stop Docker
+        if: always()
+        run: docker-compose -f "docker-compose.yml" down
+
+      - name: Check linting
+        run: yarn lint
+
+      - name: Check commit message
+        uses: wagoid/commitlint-github-action@v4
+
+      - name: Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: .tests/coverage/lcov.info
