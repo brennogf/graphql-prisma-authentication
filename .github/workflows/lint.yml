@@ -1,0 +1,23 @@
+name: Lint
+
+on: ['push', 'pull_request']
+
+jobs:
+  code:
+    name: Lint code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+
+      - name: Run Prettier
+        run: yarn format
+
+      - name: Run ESLint
+        run: yarn lint
