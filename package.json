@@ -38,7 +38,6 @@
     "eslint-plugin-standard": "^5.0.0",
     "faker": "^5.5.3",
     "graphql-request": "^3.6.0",
-    "hooks": "^0.3.2",
     "husky": "^7.0.2",
     "jest": "^27.2.4",
     "lint-staged": "^11.2.3",
@@ -62,7 +61,16 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "yarn lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "yarn format",
+      "yarn lint",
+      "yarn test --bail 1 --findRelatedTests",
+      "git add ."
+    ]
   }
 }

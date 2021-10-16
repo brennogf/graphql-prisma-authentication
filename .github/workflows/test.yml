@@ -12,18 +12,16 @@ jobs:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      APP_URL: ${{ secrets.APP_URL }}
-      PORT: ${{ secrets.PORT }}
       TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Start Docker
+      - name: Start docker
         run: docker-compose -f "docker-compose.yml" up -d --build
 
       - name: Install node
@@ -32,23 +30,17 @@ jobs:
           node-version: 14.x
 
       - name: Install dependencies
-        run: yarn
+        uses: bahmutov/npm-install@v1
 
-      - name: Check tests
+      - name: Run Jest
         run: yarn test
 
-      - name: Stop Docker
+      - name: Stop docker
         if: always()
         run: docker-compose -f "docker-compose.yml" down
-
-      - name: Check linting
-        run: yarn lint
-
-      - name: Check commit message
-        uses: wagoid/commitlint-github-action@v4
 
       - name: Codecov
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: .tests/coverage/lcov.info
+          files: ./tests/coverage/lcov.info
