@@ -39,7 +39,7 @@ export const serverStart = async () => {
   const options = {
     port:
       /* istanbul ignore next */
-      process.env.NODE_ENV === 'test' ? 3333 : process.env.PORT,
+      process.env.NODE_ENV === 'test' ? 0 : process.env.PORT,
     endpoint: '/graphql',
     subscriptions: '/subscriptions',
     playground: '/playground',
