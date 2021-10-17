@@ -14,6 +14,9 @@ $ yarn
 $ NODE_ENV=test docker-compose up
 $ NODE_ENV=development docker-compose up
 
+# Onn another terminal create the database tables
+$ NODE_ENV=development yarn prisma migrate dev
+
 
 
 # Start docker-compose on another terminal before starting the app

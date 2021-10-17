@@ -1,4 +1,4 @@
-import { MutationResolvers, User } from '@resolvers/types'
+import { MutationResolvers } from '@resolvers/types'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
@@ -51,7 +51,7 @@ export const Mutation: MutationResolvers = {
 
     // Cifra a senha e cria o novo usuário
     const password = await bcrypt.hash(args.password, 10)
-    const user: User = await context.prisma.user.create({
+    const user = await context.prisma.user.create({
       data: {
         ...args,
         password
@@ -76,7 +76,7 @@ export const Mutation: MutationResolvers = {
   // Faz a autenticação do usuário
   login: async (parent, args, context) => {
     // Verifica se o email existe
-    const user: User = await context.prisma.user.findUnique({
+    const user = await context.prisma.user.findUnique({
       where: { email: args.email }
     })
     if (!user) throw new Error('Email not found.')
