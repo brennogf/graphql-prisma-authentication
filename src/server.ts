@@ -45,7 +45,7 @@ export const serverStart = async () => {
     playground: '/playground',
     cors: {
       credentials: true,
-      origin: [process.env.APP_URL]
+      origin: 'http://localhost:3000'
     }
   }
 
